@@ -64,7 +64,7 @@ function ProductDetail({ product: p }: { product: Product }) {
                 value={quantity}
                 change={setQuantity}
                 max={available}
-                step={p.unit === 'Piece' ? 1 : Math.min(0.1, available)}
+                step={p.unit === 'Piece' ? 1 : Math.min(0.5, available)}
                 label={p.name}
               />
               <strong>{money(quantity * p.effectivePrice)}</strong>

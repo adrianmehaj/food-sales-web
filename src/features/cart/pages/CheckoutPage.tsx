@@ -293,7 +293,7 @@ export function CheckoutPage() {
                 </p>
                 <Quantity
                   value={item.quantity}
-                  step={item.product.unit === 'Piece' ? 1 : 0.1}
+                  step={item.product.unit === 'Piece' ? 1 : 0.5}
                   max={item.product.stock}
                   label={item.product.name}
                   change={(quantity) => cart.update(item.product.id, quantity)}
