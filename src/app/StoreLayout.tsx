@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { ArrowUpRight, Leaf, Mail, Phone, ShoppingBasket, UserRound } from 'lucide-react';
+import { ArrowUpRight, Leaf, Mail, MapPin, Phone, ShoppingBasket, UserRound } from 'lucide-react';
 import { useAuth } from '../features/account/state/AuthContext';
 import { useCart } from '../features/cart/state/CartContext';
 import { StoreMobileNav } from './StoreMobileNav';
@@ -113,6 +113,15 @@ export function StoreLayout() {
             </a>
             <a href="mailto:adrianmehaj123@gmail.com">
               <Mail size={15} /> adrianmehaj123@gmail.com
+            </a>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Skenderaj%2C%20Kosovo"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Skenderaj — hape në Google Maps"
+            >
+              <MapPin size={15} /> Skenderaj
+              <ArrowUpRight size={13} />
             </a>
             <p className="footer-contact-note">Për çdo porosi, ju kontaktojmë për konfirmim.</p>
           </div>
