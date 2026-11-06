@@ -156,6 +156,7 @@ export function Quantity({
       <input
         aria-label={'Sasia për ' + label}
         type="number"
+        inputMode={step < 1 ? 'decimal' : 'numeric'}
         min={step}
         max={max}
         step={step}
