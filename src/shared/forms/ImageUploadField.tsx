@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { ImagePlus, LoaderCircle, Trash2 } from 'lucide-react';
 import { api } from '../api';
+import { isSupportedImage } from './imageFile';
 
 export function ImageUploadField({
   value,
@@ -19,8 +20,8 @@ export function ImageUploadField({
   async function upload(file?: File) {
     if (!file) return;
     setError('');
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      setError('Zgjidhni një fotografi JPG, PNG ose WebP.');
+    if (!isSupportedImage(file)) {
+      setError('Zgjidhni një fotografi JPG, JPEG, JFIF, PNG ose WebP.');
       return;
     }
     if (file.size > 5 * 1024 * 1024 || file.size === 0) {
@@ -66,7 +67,7 @@ export function ImageUploadField({
             className="image-file-input"
             id={id}
             type="file"
-            accept="image/jpeg,image/png,image/webp"
+            accept=".jpg,.jpeg,.jfif,.png,.webp,image/jpeg,image/png,image/webp"
             disabled={busy}
             aria-describedby={id + '-hint'}
             onChange={(e) => {
@@ -94,7 +95,7 @@ export function ImageUploadField({
           )}
         </div>
         <small id={id + '-hint'} className="muted">
-          JPG, PNG ose WebP · Deri në 5 MB
+          JPG, JPEG, JFIF, PNG ose WebP · Deri në 5 MB
         </small>
         {busy && (
           <span role="status" className="muted">

@@ -111,7 +111,7 @@ export function AdminLayout() {
       )}
       <aside className="admin-sidebar">
         <Link className="brand" to="/admin">
-          <img src="/brand.svg" width="39" height="39" alt="" />
+          <img src="/brand-mark.svg" width="39" height="39" alt="" />
           <span>
             Tryeza<small>PRODUKTE BIO · ADMIN</small>
           </span>
@@ -158,7 +158,9 @@ export function AdminLayout() {
         <main id="main" className="admin-content">
           <Outlet />
         </main>
-        <footer className="admin-footer">© {new Date().getFullYear()} Tryeza - Produkte Bio</footer>
+        <footer className="admin-footer">
+          © {new Date().getFullYear()} Tryeza - Produkte Bio · Adrian Mehaj
+        </footer>
       </div>
     </div>
   );

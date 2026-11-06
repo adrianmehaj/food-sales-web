@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ImagePlus, LoaderCircle, X } from 'lucide-react';
 import { api } from '../api';
+import { isSupportedImage } from './imageFile';
 
 export function MultiImageUploadField({
   value,
@@ -23,15 +24,8 @@ export function MultiImageUploadField({
       setError('Mund të shtoni deri në 10 fotografi për baner.');
       return;
     }
-    if (
-      files.some(
-        (f) =>
-          !['image/jpeg', 'image/png', 'image/webp'].includes(f.type) ||
-          f.size > 5242880 ||
-          f.size === 0
-      )
-    ) {
-      setError('Çdo fotografi duhet të jetë JPG, PNG ose WebP, deri në 5 MB.');
+    if (files.some((f) => !isSupportedImage(f) || f.size > 5242880 || f.size === 0)) {
+      setError('Çdo fotografi duhet të jetë JPG, JPEG, JFIF, PNG ose WebP, deri në 5 MB.');
       return;
     }
     const abort = new AbortController();
@@ -113,7 +107,7 @@ export function MultiImageUploadField({
         type="file"
         id={id}
         multiple
-        accept="image/jpeg,image/png,image/webp"
+        accept=".jpg,.jpeg,.jfif,.png,.webp,image/jpeg,image/png,image/webp"
         disabled={busy || value.length >= 10}
         onChange={(e) => {
           void upload(Array.from(e.target.files ?? []));

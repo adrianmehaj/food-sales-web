@@ -39,7 +39,7 @@ function ProductDetail({ product: p }: { product: Product }) {
           onClick={() => setZoom(true)}
           aria-label="Zmadho fotografinë"
         >
-          <img src={p.imageUrl || '/brand.svg'} alt={p.name} />
+          <img src={p.imageUrl || '/brand-mark.svg'} alt={p.name} />
           <span>
             <ZoomIn size={18} /> Shiko më afër
           </span>
@@ -86,7 +86,7 @@ function ProductDetail({ product: p }: { product: Product }) {
       </div>
       {zoom && (
         <Modal title={p.name} close={() => setZoom(false)} wide>
-          <img className="product-zoom" src={p.imageUrl || '/brand.svg'} alt={p.name} />
+          <img className="product-zoom" src={p.imageUrl || '/brand-mark.svg'} alt={p.name} />
         </Modal>
       )}
     </>

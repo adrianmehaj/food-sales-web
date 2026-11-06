@@ -1,5 +1,5 @@
 const CACHE = 'tryeza-shell-v1';
-const SHELL = ['/', '/index.html', '/brand.svg', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
+const SHELL = ['/', '/index.html', '/brand-mark.svg', '/manifest.webmanifest', '/icons/tryeza-mark-v2-64.png', '/icons/tryeza-mark-v2-180.png', '/icons/tryeza-mark-v2-192.png', '/icons/tryeza-mark-v2-512.png'];
 self.addEventListener('message', event => { if (event.data?.type === 'ACTIVATE') self.skipWaiting(); });
 self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL))); });
 self.addEventListener('activate', event => {

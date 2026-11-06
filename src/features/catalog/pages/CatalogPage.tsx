@@ -235,12 +235,12 @@ function ProductCard({ product }: { product: Product }) {
         aria-label={'Shiko ' + product.name}
       >
         <img
-          src={product.imageUrl || '/brand.svg'}
+          src={product.imageUrl || '/brand-mark.svg'}
           alt={product.name}
           loading="lazy"
           onError={(e) => {
             e.currentTarget.onerror = null;
-            e.currentTarget.src = '/brand.svg';
+            e.currentTarget.src = '/brand-mark.svg';
           }}
         />
         {product.effectivePrice < product.price && (

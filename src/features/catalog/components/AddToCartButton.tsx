@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, Plus, ShoppingBag } from 'lucide-react';
+import { Check, Plus, ShoppingBasket } from 'lucide-react';
 import type { Product } from '../../../shared/types';
 import { useCart } from '../../cart/state/CartContext';
 import { useToast } from '../../../shared/ui';
@@ -43,7 +43,7 @@ export function AddToCartButton({
       onClick={onAdd}
       aria-label={'Shto ' + product.name + ' në shportë'}
     >
-      {added ? <Check size={20} /> : expanded ? <ShoppingBag size={20} /> : <Plus size={20} />}
+      {added ? <Check size={20} /> : expanded ? <ShoppingBasket size={20} /> : <Plus size={20} />}
       {expanded && (added ? 'U shtua në shportë' : 'Shto në shportë')}
     </button>
   );

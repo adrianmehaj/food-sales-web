@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { House, ShoppingBag, Tags, UserRound } from 'lucide-react';
+import { House, ShoppingBasket, Tags, UserRound } from 'lucide-react';
 import { useAuth } from '../features/account/state/AuthContext';
 import { useCart } from '../features/cart/state/CartContext';
 
@@ -14,7 +14,7 @@ export function StoreMobileNav() {
     {
       to: '/shporta',
       label: 'Shporta',
-      icon: ShoppingBag,
+      icon: ShoppingBasket,
       active: pathname === '/shporta',
       count: items.length,
     },

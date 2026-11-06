@@ -7,6 +7,13 @@ import type { Page, Product, Unit } from '../../../shared/types';
 import { money, unitLabel } from '../../../shared/types';
 import { Empty, ErrorBox, Loading, Modal, Pager, useToast } from '../../../shared/ui';
 
+const discountedPrice = (price: number, percent: string) =>
+  percent === '' ? '' : (Math.round(price * (1 - Number(percent) / 100) * 100) / 100).toFixed(2);
+const discountPercent = (price: number, finalPrice: string) =>
+  price <= 0 || finalPrice === ''
+    ? ''
+    : (Math.round((1 - Number(finalPrice) / price) * 10000) / 100).toFixed(2);
+
 export function ProductsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -62,7 +69,7 @@ export function ProductsPage() {
                   <tr key={p.id}>
                     <td>
                       <div className="table-product">
-                        <img src={p.imageUrl || '/brand.svg'} alt="" />
+                        <img src={p.imageUrl || '/brand-mark.svg'} alt="" />
                         <span>
                           <strong>{p.name}</strong>
                           <small>{p.category}</small>
@@ -143,7 +150,11 @@ function ProductModal({
   const [unit, setUnit] = useState<Unit>(product?.unit ?? 'Kilogram');
   const [active, setActive] = useState(product?.isActive ?? true);
   const [offer, setOffer] = useState(product?.offerPrice != null);
-  const [offerPrice, setOfferPrice] = useState(product?.offerPrice ?? 0);
+  const [offerPrice, setOfferPrice] = useState(product?.offerPrice?.toFixed(2) ?? '');
+  const [percent, setPercent] = useState(
+    discountPercent(product?.price ?? 0, product?.offerPrice?.toFixed(2) ?? '')
+  );
+  const [offerInput, setOfferInput] = useState<'price' | 'percent'>('price');
   const [start, setStart] = useState(product?.offerStartsAt?.slice(0, 16) ?? '');
   const [end, setEnd] = useState(product?.offerEndsAt?.slice(0, 16) ?? '');
   const [busy, setBusy] = useState(false);
@@ -167,7 +178,7 @@ function ProductModal({
           stock,
           unit,
           isActive: active,
-          offerPrice: offer ? offerPrice : null,
+          offerPrice: offer ? Number(offerPrice) : null,
           offerStartsAt: offer ? start : null,
           offerEndsAt: offer ? end : null,
           version: product?.version,
@@ -241,7 +252,12 @@ function ProductModal({
                 max="100000"
                 step="0.01"
                 value={price}
-                onChange={(e) => setPrice(+e.target.value)}
+                onChange={(e) => {
+                  const next = Number(e.target.value);
+                  setPrice(next);
+                  if (offerInput === 'percent') setOfferPrice(discountedPrice(next, percent));
+                  else setPercent(discountPercent(next, offerPrice));
+                }}
               />
             </label>
             <label>
@@ -267,18 +283,46 @@ function ProductModal({
           </label>
           {offer && (
             <div className="offer-fields">
-              <label>
-                Çmimi në ofertë (€)
-                <input
-                  required
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  max={Math.max(0.01, price - 0.01)}
-                  value={offerPrice}
-                  onChange={(e) => setOfferPrice(+e.target.value)}
-                />
-              </label>
+              <div className="form-grid">
+                <label>
+                  Zbritja (%)
+                  <input
+                    required
+                    type="number"
+                    inputMode="decimal"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    value={percent}
+                    onChange={(e) => {
+                      setPercent(e.target.value);
+                      setOfferInput('percent');
+                      setOfferPrice(discountedPrice(price, e.target.value));
+                    }}
+                  />
+                </label>
+                <label>
+                  Çmimi final në ofertë (€)
+                  <input
+                    required
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    max={Math.max(0.01, price - 0.01)}
+                    value={offerPrice}
+                    inputMode="decimal"
+                    onChange={(e) => {
+                      setOfferPrice(e.target.value);
+                      setOfferInput('price');
+                      setPercent(discountPercent(price, e.target.value));
+                    }}
+                  />
+                </label>
+              </div>
+              <small className="muted">
+                Shkruani zbritjen ose çmimin final. Fusha tjetër llogaritet automatikisht; çmimi
+                rrumbullakohet në cent.
+              </small>
               <div className="form-grid">
                 <label>
                   Fillimi

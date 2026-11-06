@@ -285,7 +285,7 @@ export function CheckoutPage() {
           </h2>
           {cart.items.map((item) => (
             <article className="cart-line" key={item.product.id}>
-              <img src={item.product.imageUrl || '/brand.svg'} alt="" />
+              <img src={item.product.imageUrl || '/brand-mark.svg'} alt="" />
               <div>
                 <h3>{item.product.name}</h3>
                 <p>

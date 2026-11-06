@@ -1,16 +1,13 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { ArrowUpRight, Leaf, Phone, ShoppingBag, UserRound } from 'lucide-react';
+import { ArrowUpRight, Leaf, Mail, Phone, ShoppingBasket, UserRound } from 'lucide-react';
 import { useAuth } from '../features/account/state/AuthContext';
 import { useCart } from '../features/cart/state/CartContext';
-import { useResource } from '../shared/api';
-import type { Business } from '../shared/types';
 import { StoreMobileNav } from './StoreMobileNav';
 import { NotificationBell } from '../features/notifications/components/NotificationBell';
 
 export function StoreLayout() {
   const { user } = useAuth();
   const { items } = useCart();
-  const business = useResource<Business>('/catalog/business');
   const location = useLocation();
   const catalogActive = location.pathname === '/' || location.pathname.startsWith('/produktet/');
   const offersActive =
@@ -21,7 +18,7 @@ export function StoreLayout() {
       <header className="store-header-shell">
         <div className="store-header wrap">
           <Link to="/" className="brand">
-            <img src="/brand.svg" width="40" height="40" alt="" />
+            <img src="/brand-mark.svg" width="40" height="40" alt="" />
             <span>
               Tryeza<small>PRODUKTE BIO</small>
             </span>
@@ -46,10 +43,16 @@ export function StoreLayout() {
             </NavLink>
           </nav>
           <div className="header-actions">
-            <Link to="/shporta" className="cart-button">
-              <ShoppingBag size={19} />
+            <Link
+              to="/shporta"
+              className="cart-button"
+              aria-label={`Shporta, ${items.length} produkte`}
+            >
+              <ShoppingBasket size={21} strokeWidth={1.75} />
               <span>Shporta</span>
-              <b>{items.length}</b>
+              {items.length > 0 && (
+                <b aria-hidden="true">{items.length > 99 ? '99+' : items.length}</b>
+              )}
             </Link>
             {user && <NotificationBell key={user.id} />}
             <Link
@@ -70,7 +73,7 @@ export function StoreLayout() {
         <div className="wrap footer-grid">
           <div className="footer-brand">
             <Link className="brand" to="/">
-              <img src="/brand.svg" width="42" height="42" alt="" />
+              <img src="/brand-mark.svg" width="42" height="42" alt="" />
               <span>
                 Tryeza<small>PRODUKTE BIO</small>
               </span>
@@ -95,7 +98,7 @@ export function StoreLayout() {
               Si funksionon <ArrowUpRight size={15} />
             </Link>
           </div>
-          <div>
+          <div className="footer-contact">
             <span className="eyebrow">LLOGARIA & KONTAKTI</span>
             <Link to="/llogaria">
               Llogaria ime <ArrowUpRight size={15} />
@@ -105,17 +108,19 @@ export function StoreLayout() {
                 Paneli i administrimit <ArrowUpRight size={15} />
               </Link>
             )}
-            {business.data?.phone && (
-              <a href={'tel:' + business.data.phone}>
-                <Phone size={15} /> {business.data.phone}
-              </a>
-            )}
+            <a href="tel:+38349194677">
+              <Phone size={15} /> +383 49 194 677
+            </a>
+            <a href="mailto:adrianmehaj123@gmail.com">
+              <Mail size={15} /> adrianmehaj123@gmail.com
+            </a>
             <p className="footer-contact-note">Për çdo porosi, ju kontaktojmë për konfirmim.</p>
           </div>
         </div>
         <div className="wrap footer-bottom">
           <span>
-            © {new Date().getFullYear()} Tryeza - Produkte Bio. Të gjitha të drejtat e rezervuara.
+            © {new Date().getFullYear()} Tryeza - Produkte Bio · Adrian Mehaj. Të gjitha të drejtat
+            e rezervuara.
           </span>
         </div>
       </footer>
