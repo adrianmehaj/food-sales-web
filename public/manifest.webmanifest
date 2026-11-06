@@ -1,0 +1,10 @@
+{
+  "id": "/", "name": "Tryeza - Produkte Bio", "short_name": "Tryeza - Produkte Bio",
+  "description": "Porositni produkte të freskëta me dërgesë falas.", "lang": "sq",
+  "start_url": "/", "scope": "/", "display": "standalone", "background_color": "#faf9f5",
+  "theme_color": "#234d38",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
