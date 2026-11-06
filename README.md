@@ -41,3 +41,15 @@ Emri i instalimit: **Tryeza - Produkte Bio**. Service worker aktivizohet në bui
 TypeScript/Vite/PWA build kaloi. Kontrollet e API-së me LocalDB përfshijnë porosi/pagesa, stok, izolim klientësh, administratorë, profile, fotografi dhe datën e dërgesës; raporti gjendet te docs/VERIFICATION.sq.md në backend. Pamja responsive dhe instalimi mbeten për verifikim në pajisje reale.
 
 Rikthimi i fjalëkalimit, verifikimi i emailit, MFA dhe njoftimet email/SMS/push ende nuk janë implementuar. Për hostim, backup, ruajtjen e fotografive dhe konfigurimin e biznesit ndiqni README-n e backend-it.
+
+## Zgjerimi dhe funksionet e reja
+
+Struktura e plotë dhe rregullat e zgjerimit janë te [ARCHITECTURE.md](ARCHITECTURE.md). Faqet janë ndarë nga komponentët dhe gjendja sipas funksionit. Raportet dhe njoftimet kanë modulet e tyre. Përdorni npm run format:check për stilin e kodit dhe npm run build për TypeScript/PWA.
+
+Ofertat fillojnë me karusel reklamash (fotografi të shumëfishta, ndërrim çdo 5 sekonda, shigjeta dhe ndalim). Hero shfaqet vetëm te produktet. Produktet kanë faqe detajesh dhe shtim në shportë me reagim të përkohshëm. Klienti pas hyrjes ridrejtohet te produktet; llogaria ka skeda të veçanta për porositë dhe profilin.
+
+Admini ka Raportet & borxhet, raport për secilin klient, historik porosish/pagesash dhe PDF/Excel. Eksportet lexojnë të gjitha faqet deri në 5,000 rreshta për listë dhe nuk shkurtojnë në heshtje rezultatet më të mëdha. PDF përdor Lato për shkronjat shqipe; licenca është public/licenses/OFL-Lato.txt. Bibliotekat e eksportit ngarkohen veçmas kur kërkohen.
+
+Zilja e njoftimeve rifreskohet çdo 15 sekonda gjatë përdorimit të platformës, për porositë e reja dhe konfirmimet me datë. Njoftimet janë private për klientin; adminët marrin njoftimet e porosive të reja. SMS/email/push jashtë platformës mbeten jashtë këtij implementimi.
+
+Përditësimet PWA kontrollohen gjatë rikthimit në aplikacion dhe çdo minutë kur është aktiv, me updateViaCache none. Versioni i ri aktivizohet nga përdoruesi me Përditëso për të ruajtur formularët në proces. Linku Quick Tunnel nuk ndryshon për çdo build; ndryshon kur krijohet një tunel i ri. Në iPhone hapni linkun aktual në Safari, rifreskojeni dhe pastaj rihapni PWA-në. Karuseli ka vetëm shigjeta të tejdukshme, rotacion 5 sekonda dhe crossfade 1.2 sekonda me fotografinë e mëparshme poshtë; preferenca reduced-motion respektohet.

@@ -9,13 +9,15 @@ export const passwordRequirements = [
 export function getEmailError(value: string): string {
   const email = value.trim();
   if (!email) return 'Shkruani adresën e emailit.';
-  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Shkruani një email të vlefshëm, p.sh. emri@shembull.com.';
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    return 'Shkruani një email të vlefshëm, p.sh. emri@shembull.com.';
   return '';
 }
 
 export function getPasswordError(value: string, requirePolicy: boolean): string {
   if (!value) return 'Shkruani fjalëkalimin.';
   if (value.length > 128) return 'Fjalëkalimi mund të ketë deri në 128 karaktere.';
-  if (requirePolicy && passwordRequirements.some(rule => !rule.matches(value))) return 'Plotësoni kërkesat e fjalëkalimit më poshtë.';
+  if (requirePolicy && passwordRequirements.some((rule) => !rule.matches(value)))
+    return 'Plotësoni kërkesat e fjalëkalimit më poshtë.';
   return '';
 }

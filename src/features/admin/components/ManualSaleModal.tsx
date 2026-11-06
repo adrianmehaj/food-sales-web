@@ -1,0 +1,259 @@
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { Plus, Search, Trash2, X } from 'lucide-react';
+import { send, useResource } from '../../../shared/api';
+import type { Customer, Page, Product, Receipt } from '../../../shared/types';
+import { money, unitLabel } from '../../../shared/types';
+import { ErrorBox, Modal, Quantity, useToast } from '../../../shared/ui';
+import { CustomerFields, emptyCustomer } from '../../cart/pages/CheckoutPage';
+import type { CustomerFieldsValue } from '../../cart/pages/CheckoutPage';
+
+export function ManualSaleModal({ close, saved }: { close: () => void; saved: () => void }) {
+  const [fields, setFields] = useState<CustomerFieldsValue>(emptyCustomer);
+  const [customer, setCustomer] = useState<Customer>();
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [search, setSearch] = useState('');
+  const [lines, setLines] = useState<{ product: Product; quantity: number }[]>([]);
+  const [complete, setComplete] = useState(true);
+  const [paid, setPaid] = useState(0);
+  const [approve, setApprove] = useState(false);
+  const [requestId] = useState(() => crypto.randomUUID());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const toast = useToast();
+  const products = useResource<Page<Product>>(
+    '/admin/products?pageSize=20&search=' + encodeURIComponent(search)
+  );
+  const customers = useResource<Page<Customer>>(
+    '/admin/customers?pageSize=10&search=' + encodeURIComponent(customerSearch)
+  );
+  const prices = useResource<{ productId: string; price: number }[]>(
+    customer?.type === 'Business' ? `/admin/customers/${customer.id}/prices` : null
+  );
+  const price = (p: Product) =>
+    prices.data?.find((x) => x.productId === p.id)?.price ?? p.effectivePrice;
+  const total = lines.reduce(
+    (sum, x) => sum + Math.round(price(x.product) * x.quantity * 100) / 100,
+    0
+  );
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    if (!lines.length) {
+      setError('Zgjidhni të paktën një produkt.');
+      return;
+    }
+    setBusy(true);
+    setError('');
+    try {
+      await send<Receipt>('/admin/orders', {
+        ...fields,
+        requestId,
+        customerId: customer?.id ?? null,
+        items: lines.map((x) => ({ productId: x.product.id, quantity: x.quantity })),
+        completeImmediately: complete,
+        initialPayment: complete ? paid : 0,
+        approveCredit: complete && approve,
+      });
+      toast('Shitja u regjistrua.');
+      saved();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  function chooseCustomer(c: Customer) {
+    setCustomer(c);
+    setFields({ ...fields, name: c.name, phone: c.phone, city: c.city, address: c.address });
+  }
+  return (
+    <Modal
+      title="Shto shitje"
+      close={() => {
+        if (!busy) close();
+      }}
+      wide
+    >
+      <form onSubmit={submit}>
+        <fieldset disabled={busy} className="form-fields">
+          <p className="muted small">
+            Për telefonata, shitje direkte ose porosi që i regjistroni ju.
+          </p>
+          <h3>1. Klienti</h3>
+          {customer ? (
+            <div className="selected-customer">
+              <span>
+                <strong>{customer.name}</strong>
+                <small>
+                  {customer.phone} · {customer.type === 'Business' ? 'Biznes' : 'Individ'}
+                </small>
+              </span>
+              <button
+                type="button"
+                className="icon-button"
+                aria-label="Hiq klientin"
+                onClick={() => setCustomer(undefined)}
+              >
+                <X size={17} />
+              </button>
+            </div>
+          ) : (
+            <>
+              <label className="search-field">
+                <Search size={17} />
+                <input
+                  placeholder="Kërko klient ekzistues sipas emrit ose telefonit"
+                  aria-label="Kërko klient"
+                  value={customerSearch}
+                  onChange={(e) => setCustomerSearch(e.target.value)}
+                />
+              </label>
+              <div className="customer-suggestions">
+                {customers.data?.items.map((c) => (
+                  <button key={c.id} type="button" onClick={() => chooseCustomer(c)}>
+                    {c.name}
+                    <small>{c.phone}</small>
+                  </button>
+                ))}
+              </div>
+              <p className="small muted">Ose plotësoni të dhënat për një klient të ri.</p>
+            </>
+          )}
+          <ErrorBox message={customers.error} retry={customers.reload} />
+          <CustomerFields value={fields} change={setFields} />
+          <h3>2. Produktet</h3>
+          <label className="search-field">
+            <Search size={17} />
+            <input
+              aria-label="Kërko produkt për shitje"
+              placeholder="Kërko produkt sipas emrit…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+          <ErrorBox message={products.error || prices.error} />
+          <div className="product-picker">
+            {products.data?.items
+              .filter((p) => p.isActive && p.stock > 0)
+              .map((p) => (
+                <button
+                  type="button"
+                  key={p.id}
+                  disabled={lines.some((x) => x.product.id === p.id)}
+                  onClick={() =>
+                    setLines([...lines, { product: p, quantity: Math.min(1, p.stock) }])
+                  }
+                >
+                  <span>
+                    {p.name}
+                    <small>
+                      {money(price(p))} / {unitLabel[p.unit]}
+                    </small>
+                  </span>
+                  <Plus size={17} />
+                </button>
+              ))}
+          </div>
+          {lines.map((line) => (
+            <div className="manual-line" key={line.product.id}>
+              <span>
+                <strong>{line.product.name}</strong>
+                <small>
+                  {money(price(line.product))} / {unitLabel[line.product.unit]}
+                </small>
+              </span>
+              <Quantity
+                value={line.quantity}
+                step={line.product.unit === 'Piece' ? 1 : 0.01}
+                max={line.product.stock}
+                label={line.product.name}
+                change={(q) =>
+                  setLines((current) =>
+                    current.map((x) =>
+                      x.product.id === line.product.id ? { ...x, quantity: q } : x
+                    )
+                  )
+                }
+              />
+              <strong>{money(price(line.product) * line.quantity)}</strong>
+              <button
+                type="button"
+                className="icon-button"
+                aria-label={'Hiq ' + line.product.name}
+                onClick={() => setLines(lines.filter((x) => x.product.id !== line.product.id))}
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+          <div className="summary-line total">
+            <span>Totali</span>
+            <strong>{money(total)}</strong>
+          </div>
+          <h3>3. Pagesa dhe përfundimi</h3>
+          <label className="check-label">
+            <input
+              type="checkbox"
+              checked={complete}
+              onChange={(e) => setComplete(e.target.checked)}
+            />{' '}
+            Shitja është e përfunduar / e dorëzuar
+          </label>
+          {complete ? (
+            <>
+              <div className="payment-input-row">
+                <label>
+                  Shuma e paguar (€)
+                  <input
+                    type="number"
+                    min="0"
+                    max={total}
+                    step="0.01"
+                    required
+                    value={paid}
+                    onChange={(e) => setPaid(+e.target.value)}
+                  />
+                </label>
+                <button className="button secondary" type="button" onClick={() => setPaid(total)}>
+                  Pagesë e plotë
+                </button>
+              </div>
+              <div className="summary-line">
+                <span>Mbetet borxh</span>
+                <strong className="debt-text">{money(Math.max(0, total - paid))}</strong>
+              </div>
+              {paid < total && (
+                <label className="check-label credit-approval">
+                  <input
+                    type="checkbox"
+                    required
+                    checked={approve}
+                    onChange={(e) => setApprove(e.target.checked)}
+                  />{' '}
+                  Miratoj shitjen me borxh prej {money(total - paid)}.
+                </label>
+              )}
+            </>
+          ) : (
+            <p className="notice">
+              Do të ruhet si porosi e re manuale. Nuk llogaritet si shitje ose arkëtim derisa të
+              përfundojë.
+            </p>
+          )}
+          <ErrorBox message={error} />
+          <div className="modal-actions">
+            <button type="button" className="button secondary" onClick={close}>
+              Anulo
+            </button>
+            <button
+              className="button primary"
+              disabled={busy || !lines.length || !!prices.error || prices.loading}
+            >
+              {busy ? 'Duke ruajtur…' : complete ? 'Regjistro shitjen' : 'Ruaj porosinë'}
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </Modal>
+  );
+}
