@@ -17,8 +17,10 @@ src/
       state/                   # Sesioni i llogarisë
     admin/
       pages/                   # Pasqyra, shitjet, produktet, klientët, administratorët
-      components/              # Formulari i shitjes manuale
-    reports/pages/             # Raportet e klientëve dhe historiku financiar
+      components/              # Kërkimi i adminit dhe formulari i shitjes manuale
+    reports/
+      pages/                   # Raportet e klientëve dhe historiku financiar
+      components/              # Kartat e përbashkëta financiare
     notifications/components/  # Zilja dhe kutia private e njoftimeve
   shared/
     api.ts                     # HTTP, cookies, CSRF, anulimi dhe rifreskimi i rolit
@@ -38,7 +40,7 @@ src/
 - Gjendja e shportës dhe sesionit ndahet përmes provider-ëve të tyre. Të dhënat private nuk ruhen në service-worker cache.
 - PDF/Excel ngarkohen në chunks të veçantë kur kërkohet eksporti. Shkarkimet lexojnë faqet e API-së, jo vetëm faqen e dukshme të tabelës; kufiri është 5,000 rreshta për listë.
 - Njoftimet rifreskohen çdo 15 sekonda kur platforma është e hapur; nuk janë push jashtë aplikacionit.
-- Stilet bazë janë në styles.css, përshtatjet për ekranet në responsive.css dhe dizajni aktual i dyqanit/panelit në experience.css. Mbani rregullat e një komponenti së bashku dhe verifikoni desktop/mobile pas ndryshimit.
+- Stilet bazë janë në styles.css, përshtatjet për ekranet në responsive.css, dizajni i dyqanit në experience.css dhe pamjet financiare të adminit në admin-finance.css. Mbani rregullat e një komponenti së bashku dhe verifikoni desktop/mobile pas ndryshimit.
 - Përdorni TypeScript strict, npm run format:check dhe npm run build para ruajtjes së ndryshimeve.
 
 Për një funksion të ri shtoni dosjen përkatëse te features dhe krijoni nënndarje vetëm kur ekziston përgjegjësi reale; mos shtoni dosje bosh ose abstraksione pa përdorim.

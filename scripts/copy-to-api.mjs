@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const web = path.resolve(import.meta.dirname, '..');
 const api = path.resolve(
-  process.argv[2] ?? 'C:/Users/Administrator/source/repos/adrianmehaj/food-sales-api'
+  process.argv[2] ?? process.env.FOODSALES_API_PATH ?? path.join(web, '..', 'food-sales-api')
 );
 await access(path.join(api, 'src/FoodSales.Api/FoodSales.Api.csproj'));
 await access(path.join(web, 'dist/index.html'));
