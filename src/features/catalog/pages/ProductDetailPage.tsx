@@ -64,6 +64,7 @@ function ProductDetail({ product: p }: { product: Product }) {
                 value={quantity}
                 change={setQuantity}
                 max={available}
+                stockMessage={`Nuk ka më shumë stok për momentin. Sasia në dispozicion: ${+available.toFixed(3)} ${unitLabel[p.unit]}.`}
                 step={p.unit === 'Piece' ? 1 : Math.min(0.5, available)}
                 label={p.name}
               />

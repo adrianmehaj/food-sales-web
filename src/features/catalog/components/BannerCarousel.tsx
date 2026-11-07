@@ -36,7 +36,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
     if (slides.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = setInterval(() => {
       if (!document.hidden) next(1);
-    }, 5000);
+    }, 3500);
     return () => clearInterval(timer);
   }, [slides.length, next]);
   useEffect(() => {

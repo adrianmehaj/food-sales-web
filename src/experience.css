@@ -111,8 +111,73 @@
   line-height: 1.5;
   -webkit-line-clamp: 1;
 }
+.product-card-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.product-card-identity {
+  min-width: 0;
+}
+.product-card-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.product-card-heading .product-price {
+  padding-top: 5px;
+  text-align: right;
+  white-space: nowrap;
+}
+.product-card .detail-add {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 8px;
+  gap: 6px;
+  border-radius: 8px;
+  font-size: clamp(11px, 1vw, 13px);
+  justify-content: center;
+}
+.product-card .detail-add svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
 .header-actions {
   gap: 15px;
+}
+.cart-page .continue-shopping {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 10px 16px;
+  margin-bottom: 22px;
+  border: 1px solid #c6d5c0;
+  border-radius: 10px;
+  background: #edf3e8;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 5px #234d3808;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+}
+.cart-page .continue-shopping:hover {
+  background: #e3ecdc;
+  border-color: #8fa583;
+}
+.cart-page .continue-shopping:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
 }
 .footer-contact a[href^='mailto:'] {
   white-space: nowrap;
@@ -282,10 +347,10 @@
     transform 0.2s;
 }
 .add-product.just-added,
-.detail-add.just-added {
+.button.primary.detail-add.just-added {
   color: white;
   background: var(--green);
-  animation: cart-feedback 0.95s ease;
+  border-color: var(--green);
 }
 @keyframes cart-feedback {
   0% {
@@ -385,23 +450,53 @@
   color: #527747;
 }
 .detail-purchase {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin: 25px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px 18px;
+  margin: 25px 0 28px;
 }
 .detail-purchase > label {
+  grid-column: 1 / -1;
   margin: 0;
   font-size: 13px;
 }
 .detail-purchase > strong {
-  margin-left: auto;
+  margin: 10px 0 0;
   font-size: 22px;
 }
 .quantity {
   flex-shrink: 0;
   width: max-content;
+}
+.quantity-field {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
+  vertical-align: top;
+}
+.stock-limit-note {
+  display: block;
+  max-width: 300px;
+  padding: 0;
+  margin-top: 4px;
+  color: #8a5a21;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: left;
+}
+.detail-purchase > .quantity-field {
+  min-width: 0;
+  width: 100%;
+  gap: 5px;
+}
+.quantity button[aria-disabled='true'] {
+  color: #8f9e8d;
+}
+.button.detail-add[aria-disabled='true']:not(.just-added) {
+  opacity: 0.65;
 }
 .quantity button {
   flex-shrink: 0;
@@ -436,6 +531,36 @@
   min-height: 55px;
   border-radius: 12px;
   font-size: 15px;
+}
+.button.primary.detail-add {
+  background: #fff;
+  color: var(--green);
+  border: 1.5px solid #8ba58f;
+  box-shadow: 0 2px 5px #234d3812;
+  font-weight: 600;
+  transition:
+    background-color 0.6s ease,
+    color 0.4s ease,
+    border-color 0.6s ease,
+    box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.button.primary.detail-add:hover:not(:disabled):not(.just-added) {
+  background: #fff;
+  color: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 3px 8px #234d3820;
+}
+.button.primary.detail-add:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.button.primary.detail-add:disabled {
+  box-shadow: none;
+}
+.button.primary.detail-add.just-added:hover:not(:disabled) {
+  background: var(--green);
+  color: #fff;
 }
 .detail-assurances {
   padding-top: 22px;
@@ -1982,6 +2107,9 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .button.primary.detail-add {
+    transition: none;
+  }
   .banner-slide.entering-slide,
   .just-added {
     animation: none;

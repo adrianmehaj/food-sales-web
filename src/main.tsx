@@ -14,6 +14,7 @@ import '@fontsource/manrope/latin-700.css';
 import './styles.css';
 import './responsive.css';
 import './experience.css';
+import './admin-finance.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -54,11 +54,11 @@ export function ProductsPage() {
           <Loading />
         ) : products.data?.items.length ? (
           <div className="table-scroll">
-            <table>
+            <table role="table" className="finance-table mobile-record-table">
               <thead>
                 <tr>
                   <th>Produkti</th>
-                  <th>Çmimi</th>
+                  <th className="money-cell">Çmimi</th>
                   <th>Stoku</th>
                   <th>Gjendja</th>
                   <th />
@@ -67,7 +67,7 @@ export function ProductsPage() {
               <tbody>
                 {products.data.items.map((p) => (
                   <tr key={p.id}>
-                    <td>
+                    <td data-label="Produkti" className="record-primary">
                       <div className="table-product">
                         <img src={p.imageUrl || '/brand-mark.svg'} alt="" />
                         <span>
@@ -76,17 +76,17 @@ export function ProductsPage() {
                         </span>
                       </div>
                     </td>
-                    <td>
+                    <td data-label="Çmimi" className="money-cell">
                       <strong>{money(p.effectivePrice)}</strong>
                       <small>
                         për {unitLabel[p.unit]}{' '}
                         {p.effectivePrice !== p.price && <del>{money(p.price)}</del>}
                       </small>
                     </td>
-                    <td className={p.stock <= 5 ? 'debt-text' : ''}>
+                    <td data-label="Stoku" className={p.stock <= 5 ? 'debt-text' : ''}>
                       {p.stock} {unitLabel[p.unit]}
                     </td>
-                    <td>
+                    <td data-label="Gjendja">
                       <span
                         className={
                           'badge ' + (p.isActive ? 'status-Completed' : 'status-Cancelled')
@@ -95,7 +95,7 @@ export function ProductsPage() {
                         {p.isActive ? 'Aktiv' : 'Joaktiv'}
                       </span>
                     </td>
-                    <td>
+                    <td className="record-action">
                       <button
                         className="icon-button"
                         aria-label={'Ndrysho ' + p.name}

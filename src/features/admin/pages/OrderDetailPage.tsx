@@ -83,7 +83,7 @@ export function OrderDetailPage() {
         </div>
       </div>
       <ErrorBox message={error} />
-      <div className="detail-grid">
+      <div className="detail-grid finance-order-detail">
         <div>
           <section className="panel">
             <div className="panel-heading">

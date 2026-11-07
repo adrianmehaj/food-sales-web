@@ -16,6 +16,7 @@ import { date, money, shortId } from '../../../shared/types';
 import { Badge, Empty, ErrorBox, Loading } from '../../../shared/ui';
 import { ReportExportButtons } from '../../../shared/reports/ReportExportButtons';
 import type { ExportReport } from '../../../shared/reports/reportExport';
+import { FinancialStat } from '../../reports/components/FinancialStat';
 
 function localDate(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -79,7 +80,7 @@ export function DashboardPage() {
           <Plus size={18} /> Shto shitje
         </Link>
       </div>
-      <section className="report-filter-bar">
+      <section className="report-filter-bar" aria-label="Periudha dhe eksportimi i raportit">
         <div className="segmented">
           {[
             { key: 'day', label: 'Sot' },
@@ -89,6 +90,7 @@ export function DashboardPage() {
             <button
               key={p.key}
               className={period === p.key ? 'selected' : ''}
+              aria-pressed={period === p.key}
               onClick={() => {
                 setPeriod(p.key);
                 setRange(preset(p.key));
@@ -138,47 +140,38 @@ export function DashboardPage() {
       ) : (
         data && (
           <>
-            <div className="stats-grid">
+            <div className="finance-grid">
               {[
                 {
                   title: 'Shitje të përfunduara',
                   value: money(data.sales),
                   note: 'Sipas datës së përfundimit',
                   icon: ReceiptText,
-                  tone: 'green',
+                  tone: 'green' as const,
                 },
                 {
                   title: 'Paratë e arkëtuara',
                   value: money(data.collections),
                   note: 'Pagesat e pranuara në periudhë',
                   icon: Banknote,
-                  tone: 'blue',
+                  tone: 'blue' as const,
                 },
                 {
                   title: 'Borxhi aktual',
                   value: money(data.outstandingDebt),
                   note: 'Gjendja në të gjitha datat',
                   icon: Wallet,
-                  tone: 'orange',
+                  tone: 'orange' as const,
                 },
                 {
                   title: 'Porosi në pritje',
                   value: String(data.pendingOrders),
                   note: `${data.newOrders} të reja për konfirmim`,
                   icon: Clock3,
-                  tone: 'purple',
+                  tone: 'purple' as const,
                 },
               ].map((stat) => (
-                <article className={'stat-card stat-' + stat.tone} key={stat.title}>
-                  <div>
-                    <span>{stat.title}</span>
-                    <span className={'stat-icon ' + stat.tone}>
-                      <stat.icon size={21} />
-                    </span>
-                  </div>
-                  <strong>{stat.value}</strong>
-                  <small>{stat.note}</small>
-                </article>
+                <FinancialStat key={stat.title} label={stat.title} {...stat} />
               ))}
             </div>
             <div className="dashboard-analytics">
@@ -268,37 +261,37 @@ export function DashboardPage() {
           <Loading />
         ) : orders.data?.items.length ? (
           <div className="table-scroll">
-            <table>
+            <table role="table" className="finance-table mobile-record-table">
               <thead>
                 <tr>
                   <th>Porosia</th>
                   <th>Klienti</th>
                   <th>Marrja</th>
-                  <th>Totali i porositur</th>
+                  <th className="money-cell">Totali i porositur</th>
                   <th>Statusi</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.data.items.map((o) => (
                   <tr key={o.id}>
-                    <td>
+                    <td data-label="Porosia" className="record-primary">
                       <Link className="table-link" to={'/admin/porosite/' + o.id}>
                         {shortId(o.id)}
                       </Link>
                       <small>{date(o.createdAt)}</small>
                     </td>
-                    <td>
+                    <td data-label="Klienti">
                       <strong>{o.customerName}</strong>
                       <small>{o.phone}</small>
                     </td>
-                    <td>
+                    <td data-label="Marrja">
                       {o.fulfillment === 'Delivery' ? 'Dërgesë në adresë' : 'Marrje vetë'}
                       <small>{o.requestedDeliveryDate ?? '—'}</small>
                     </td>
-                    <td>
+                    <td data-label="Totali" className="money-cell">
                       <strong>{money(o.total)}</strong>
                     </td>
-                    <td>
+                    <td data-label="Statusi">
                       <Badge status={o.status} />
                     </td>
                   </tr>

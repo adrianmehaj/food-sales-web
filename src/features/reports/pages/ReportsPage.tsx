@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowUpRight, Search, Wallet } from 'lucide-react';
 import { useResource } from '../../../shared/api';
 import type { CustomerReport, Page } from '../../../shared/types';
@@ -10,9 +10,11 @@ import type { ExportReport } from '../../../shared/reports/reportExport';
 import { customerHeaders, customerRow } from '../helpers/customerReportRows';
 
 export function ReportsPage() {
-  const [search, setSearch] = useState('');
+  const [params, setParams] = useSearchParams();
+  const search = params.get('search') ?? '';
   const [debtOnly, setDebtOnly] = useState(false);
   const [page, setPage] = useState(1);
+  useEffect(() => setPage(1), [search]);
   const filter = `search=${encodeURIComponent(search)}&debtOnly=${debtOnly}`;
   const customers = useResource<Page<CustomerReport>>(
     `/admin/reports/customers?page=${page}&${filter}`
@@ -58,6 +60,14 @@ export function ReportsPage() {
         </Link>
       </div>
       <section className="panel report-list-panel">
+        <div className="finance-section-heading">
+          <div>
+            <span className="eyebrow">PASQYRA FINANCIARE</span>
+            <h2>Bilanci sipas klientit</h2>
+            <p>Shitjet, pagesat dhe detyrimet e secilit klient.</p>
+          </div>
+          <span className="finance-count">{customers.data?.totalCount ?? '…'} klientë</span>
+        </div>
         <div className="panel-heading">
           <label className="search-field">
             <Search size={18} />
@@ -66,7 +76,10 @@ export function ReportsPage() {
               aria-label="Kërko klient në raport"
               placeholder="Kërko emrin ose telefonin…"
               onChange={(e) => {
-                setSearch(e.target.value);
+                const next = new URLSearchParams(params);
+                if (e.target.value) next.set('search', e.target.value);
+                else next.delete('search');
+                setParams(next, { replace: true });
                 setPage(1);
               }}
             />
@@ -82,28 +95,27 @@ export function ReportsPage() {
             />{' '}
             Vetëm me borxh
           </label>
-          <span className="muted">{customers.data?.totalCount ?? '…'} klientë</span>
         </div>
         <ErrorBox message={customers.error} retry={customers.reload} />
         {customers.loading ? (
           <Loading />
         ) : customers.data?.items.length ? (
           <div className="table-scroll">
-            <table className="report-table">
+            <table role="table" className="report-table finance-table mobile-record-table">
               <thead>
                 <tr>
                   <th>Klienti</th>
                   <th>Porosi</th>
-                  <th>Shitje</th>
-                  <th>Arkëtime</th>
-                  <th>Borxhi</th>
+                  <th className="money-cell">Shitje</th>
+                  <th className="money-cell">Arkëtime</th>
+                  <th className="money-cell">Borxhi</th>
                   <th />
                 </tr>
               </thead>
               <tbody>
                 {customers.data.items.map((c) => (
                   <tr key={c.id}>
-                    <td>
+                    <td data-label="Klienti" className="record-primary">
                       <Link to={'/admin/raportet/' + c.id} className="customer-report-name">
                         <span className="customer-initial">{(c.name || 'K')[0].toUpperCase()}</span>
                         <span>
@@ -114,20 +126,22 @@ export function ReportsPage() {
                         </span>
                       </Link>
                     </td>
-                    <td>
+                    <td data-label="Porosi">
                       <strong>{c.orderCount}</strong>
                       <small>{c.completedOrderCount} të përfunduara</small>
                     </td>
-                    <td>
+                    <td data-label="Shitje" className="money-cell">
                       <strong>{money(c.salesTotal)}</strong>
                     </td>
-                    <td>{money(c.paidTotal)}</td>
-                    <td>
+                    <td data-label="Arkëtime" className="money-cell collected-cell">
+                      {money(c.paidTotal)}
+                    </td>
+                    <td data-label="Borxhi" className="money-cell">
                       <span className={'balance-pill ' + (c.debt > 0 ? 'has-debt' : '')}>
                         {money(c.debt)}
                       </span>
                     </td>
-                    <td>
+                    <td className="record-action">
                       <Link className="report-open" to={'/admin/raportet/' + c.id}>
                         Hap raportin <ArrowUpRight size={16} />
                       </Link>

@@ -268,7 +268,7 @@ export function CheckoutPage() {
     );
   return (
     <div className="wrap cart-page">
-      <Link className="back-link" to="/">
+      <Link className="back-link continue-shopping" to="/">
         <ArrowLeft size={16} /> Vazhdo blerjen
       </Link>
       <div className="section-heading">
@@ -295,6 +295,7 @@ export function CheckoutPage() {
                   value={item.quantity}
                   step={item.product.unit === 'Piece' ? 1 : 0.5}
                   max={item.product.stock}
+                  stockMessage={`Nuk ka më shumë stok për momentin. Në dispozicion: ${item.product.stock} ${unitLabel[item.product.unit]}.`}
                   label={item.product.name}
                   change={(quantity) => cart.update(item.product.id, quantity)}
                 />
@@ -316,7 +317,7 @@ export function CheckoutPage() {
             <strong className="green-text">Falas</strong>
           </div>
           <div className="summary-line total">
-            <span>Totali orientues</span>
+            <span>Totali</span>
             <strong>{money(total)}</strong>
           </div>
           <p className="muted small">

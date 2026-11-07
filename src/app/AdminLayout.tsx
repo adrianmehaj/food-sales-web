@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AdminSearch } from '../features/admin/components/AdminSearch';
 import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -155,6 +156,7 @@ export function AdminLayout() {
         </div>
       </aside>
       <div className="admin-main">
+        <AdminSearch />
         <main id="main" className="admin-content">
           <Outlet />
         </main>

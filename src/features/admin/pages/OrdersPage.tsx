@@ -74,22 +74,22 @@ export function OrdersPage() {
           <Loading />
         ) : orders.data?.items.length ? (
           <div className="table-scroll">
-            <table>
+            <table role="table" className="finance-table mobile-record-table">
               <thead>
                 <tr>
                   <th>Porosia / Burimi</th>
                   <th>Klienti</th>
                   <th>Statusi</th>
-                  <th>Totali</th>
+                  <th className="money-cell">Totali</th>
                   <th>Pagesa</th>
-                  <th>Borxhi</th>
+                  <th className="money-cell">Borxhi</th>
                   <th />
                 </tr>
               </thead>
               <tbody>
                 {orders.data.items.map((o) => (
                   <tr key={o.id}>
-                    <td>
+                    <td data-label="Porosia" className="record-primary">
                       <Link className="table-link" to={'/admin/porosite/' + o.id}>
                         {shortId(o.id)}
                       </Link>
@@ -97,25 +97,32 @@ export function OrdersPage() {
                         {o.source === 'Online' ? 'Online' : 'Manual'} · {date(o.createdAt)}
                       </small>
                     </td>
-                    <td>
+                    <td data-label="Klienti">
                       <strong>{o.customerName}</strong>
                       <small>{o.phone}</small>
                       {o.requestedDeliveryDate && (
                         <small>Dërgesa: {calendarDate(o.requestedDeliveryDate)}</small>
                       )}
                     </td>
-                    <td>
+                    <td data-label="Statusi">
                       <Badge status={o.status} />
                     </td>
-                    <td>{money(o.total)}</td>
-                    <td>
+                    <td data-label="Totali" className="money-cell">
+                      {money(o.total)}
+                    </td>
+                    <td data-label="Pagesa">
                       <span className={'payment-badge payment-' + o.paymentStatus}>
                         {paymentLabel[o.paymentStatus]}
                       </span>
                       <small>{money(o.paid)} arkëtuar</small>
                     </td>
-                    <td className={o.debt > 0 ? 'debt-text' : 'muted'}>{money(o.debt)}</td>
-                    <td>
+                    <td
+                      data-label="Borxhi"
+                      className={'money-cell ' + (o.debt > 0 ? 'debt-text' : 'muted')}
+                    >
+                      {money(o.debt)}
+                    </td>
+                    <td className="record-action">
                       <Link className="text-link" to={'/admin/porosite/' + o.id}>
                         Hap →
                       </Link>

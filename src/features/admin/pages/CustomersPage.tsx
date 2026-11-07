@@ -47,13 +47,13 @@ export function CustomersPage() {
           <Loading />
         ) : customers.data?.items.length ? (
           <div className="table-scroll">
-            <table>
+            <table role="table" className="finance-table mobile-record-table">
               <thead>
                 <tr>
                   <th>Klienti</th>
                   <th>Kontakti</th>
                   <th>Lloji / Afati</th>
-                  <th>Borxhi</th>
+                  <th className="money-cell">Borxhi</th>
                   <th>Historiku</th>
                   <th />
                 </tr>
@@ -61,27 +61,30 @@ export function CustomersPage() {
               <tbody>
                 {customers.data.items.map((c) => (
                   <tr key={c.id}>
-                    <td>
+                    <td data-label="Klienti" className="record-primary">
                       <strong>{c.name}</strong>
                       <small>{c.city}</small>
                     </td>
-                    <td>
+                    <td data-label="Kontakti">
                       <a href={'tel:' + c.phone}>{c.phone}</a>
                       <small>{c.address}</small>
                     </td>
-                    <td>
+                    <td data-label="Lloji / Afati">
                       {c.type === 'Business' ? 'Dyqan / biznes' : 'Individ'}
                       {c.type === 'Business' && <small>{c.paymentTermDays} ditë afat</small>}
                     </td>
-                    <td className={c.debt > 0 ? 'debt-text' : 'muted'}>
+                    <td
+                      data-label="Borxhi"
+                      className={'money-cell ' + (c.debt > 0 ? 'debt-text' : 'muted')}
+                    >
                       <strong>{money(c.debt)}</strong>
                     </td>
-                    <td>
+                    <td className="record-action">
                       <Link className="text-link" to={'/admin/raportet/' + c.id}>
                         Raporti i klientit <ArrowRight size={15} />
                       </Link>
                     </td>
-                    <td>
+                    <td className="record-action">
                       <button
                         className="icon-button"
                         aria-label={'Ndrysho ' + c.name}

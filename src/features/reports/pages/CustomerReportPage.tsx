@@ -8,6 +8,7 @@ import { Badge, Empty, ErrorBox, Loading, Pager } from '../../../shared/ui';
 import { ReportExportButtons } from '../../../shared/reports/ReportExportButtons';
 import type { ExportReport } from '../../../shared/reports/reportExport';
 import { customerHeaders, customerRow } from '../helpers/customerReportRows';
+import { FinancialStat } from '../components/FinancialStat';
 
 export function CustomerReportPage() {
   const { id } = useParams();
@@ -85,43 +86,38 @@ export function CustomerReportPage() {
               </div>
               <ReportExportButtons load={load} />
             </div>
-            <div className="stats-grid customer-stats">
+            <div className="finance-grid">
               {[
                 {
                   label: 'Porosi gjithsej',
                   value: String(c.orderCount),
                   note: `${c.completedOrderCount} të përfunduara · ${c.pendingOrderCount} në pritje`,
                   icon: ShoppingBag,
+                  tone: 'purple' as const,
                 },
                 {
                   label: 'Shitje të përfunduara',
                   value: money(c.salesTotal),
                   note: `Porositur gjithsej: ${money(c.orderedTotal)}`,
                   icon: ReceiptText,
+                  tone: 'green' as const,
                 },
                 {
                   label: 'Pagesa të pranuara',
                   value: money(c.paidTotal),
                   note: 'Të gjitha arkëtimet e regjistruara',
                   icon: Banknote,
+                  tone: 'blue' as const,
                 },
                 {
                   label: 'Borxhi i mbetur',
                   value: money(c.debt),
                   note: c.debt > 0 ? 'Detyrim i hapur' : 'Pa detyrime të hapura',
                   icon: Wallet,
+                  tone: 'orange' as const,
                 },
               ].map((s) => (
-                <article className="stat-card" key={s.label}>
-                  <div>
-                    <span>{s.label}</span>
-                    <span className="stat-icon">
-                      <s.icon size={20} />
-                    </span>
-                  </div>
-                  <strong>{s.value}</strong>
-                  <small>{s.note}</small>
-                </article>
+                <FinancialStat key={s.label} {...s} />
               ))}
             </div>
             <section className="panel">
@@ -137,32 +133,41 @@ export function CustomerReportPage() {
                 <Loading />
               ) : orders.data?.items.length ? (
                 <div className="table-scroll">
-                  <table>
+                  <table role="table" className="finance-table mobile-record-table">
                     <thead>
                       <tr>
                         <th>Porosia</th>
                         <th>Data</th>
                         <th>Statusi</th>
-                        <th>Totali</th>
-                        <th>Paguar</th>
-                        <th>Borxh</th>
+                        <th className="money-cell">Totali</th>
+                        <th className="money-cell">Paguar</th>
+                        <th className="money-cell">Borxh</th>
                       </tr>
                     </thead>
                     <tbody>
                       {orders.data.items.map((o) => (
                         <tr key={o.id}>
-                          <td>
+                          <td data-label="Porosia" className="record-primary">
                             <Link className="table-link" to={'/admin/porosite/' + o.id}>
                               {shortId(o.id)}
                             </Link>
                           </td>
-                          <td>{date(o.createdAt)}</td>
-                          <td>
+                          <td data-label="Data">{date(o.createdAt)}</td>
+                          <td data-label="Statusi">
                             <Badge status={o.status} />
                           </td>
-                          <td>{money(o.total)}</td>
-                          <td>{money(o.paid)}</td>
-                          <td className={o.debt ? 'debt-text' : ''}>{money(o.debt)}</td>
+                          <td data-label="Totali" className="money-cell">
+                            {money(o.total)}
+                          </td>
+                          <td data-label="Paguar" className="money-cell collected-cell">
+                            {money(o.paid)}
+                          </td>
+                          <td
+                            data-label="Borxh"
+                            className={'money-cell ' + (o.debt ? 'debt-text' : '')}
+                          >
+                            {money(o.debt)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -191,28 +196,30 @@ export function CustomerReportPage() {
                 <Loading />
               ) : payments.data?.items.length ? (
                 <div className="table-scroll">
-                  <table>
+                  <table role="table" className="finance-table mobile-record-table">
                     <thead>
                       <tr>
                         <th>Data e pagesës</th>
                         <th>Porosia</th>
-                        <th>Shuma</th>
+                        <th className="money-cell">Shuma</th>
                         <th>Shënimi</th>
                       </tr>
                     </thead>
                     <tbody>
                       {payments.data.items.map((p) => (
                         <tr key={p.id}>
-                          <td>{date(p.receivedAt)}</td>
-                          <td>
+                          <td data-label="Data e pagesës" className="record-primary">
+                            {date(p.receivedAt)}
+                          </td>
+                          <td data-label="Porosia">
                             <Link className="table-link" to={'/admin/porosite/' + p.orderId}>
                               {shortId(p.orderId)}
                             </Link>
                           </td>
-                          <td className="green-text">
+                          <td data-label="Shuma" className="money-cell collected-cell">
                             <strong>{money(p.amount)}</strong>
                           </td>
-                          <td>{p.note || '—'}</td>
+                          <td data-label="Shënimi">{p.note || '—'}</td>
                         </tr>
                       ))}
                     </tbody>

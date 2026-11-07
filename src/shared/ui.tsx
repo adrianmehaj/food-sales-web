@@ -136,44 +136,69 @@ export function Quantity({
   step = 1,
   max = 10000,
   label,
+  stockMessage,
 }: {
   value: number;
   change: (n: number) => void;
   step?: number;
   max?: number;
   label: string;
+  stockMessage?: string;
 }) {
+  const [atLimit, setAtLimit] = useState(false);
+  const messageId = useId();
+  useEffect(() => setAtLimit(false), [value, max]);
   return (
-    <div className="quantity">
-      <button
-        type="button"
-        aria-label={'Zvogëlo ' + label}
-        disabled={value <= step}
-        onClick={() => change(Math.max(step, +(value - step).toFixed(3)))}
-      >
-        <Minus size={14} />
-      </button>
-      <input
-        aria-label={'Sasia për ' + label}
-        type="number"
-        inputMode={step < 1 ? 'decimal' : 'numeric'}
-        min={step}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => {
-          const n = +e.target.value;
-          if (n > 0 && n <= max) change(n);
-        }}
-      />
-      <button
-        type="button"
-        aria-label={'Shto ' + label}
-        disabled={value + step > max}
-        onClick={() => change(+(value + step).toFixed(3))}
-      >
-        <Plus size={14} />
-      </button>
+    <div className="quantity-field">
+      <div className="quantity">
+        <button
+          type="button"
+          aria-label={'Zvogëlo ' + label}
+          disabled={value <= step}
+          onClick={() => change(Math.max(step, +(value - step).toFixed(3)))}
+        >
+          <Minus size={14} />
+        </button>
+        <input
+          aria-label={'Sasia për ' + label}
+          type="number"
+          inputMode={step < 1 ? 'decimal' : 'numeric'}
+          min={step}
+          max={max}
+          step={step}
+          value={value}
+          aria-describedby={atLimit ? messageId : undefined}
+          onChange={(e) => {
+            const n = +e.target.value;
+            if (n > max && stockMessage) {
+              setAtLimit(true);
+              return;
+            }
+            if (n > 0 && n <= max) change(n);
+          }}
+        />
+        <button
+          type="button"
+          aria-label={'Shto ' + label}
+          disabled={!stockMessage && value + step > max}
+          aria-disabled={stockMessage && value + step > max ? true : undefined}
+          aria-describedby={atLimit ? messageId : undefined}
+          onClick={() => {
+            if (value + step > max) {
+              if (stockMessage) setAtLimit(true);
+              return;
+            }
+            change(+(value + step).toFixed(3));
+          }}
+        >
+          <Plus size={14} />
+        </button>
+      </div>
+      {atLimit && stockMessage && (
+        <span id={messageId} className="stock-limit-note" role="status">
+          {stockMessage}
+        </span>
+      )}
     </div>
   );
 }

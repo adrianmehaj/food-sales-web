@@ -252,18 +252,20 @@ function ProductCard({ product }: { product: Product }) {
       </Link>
       <div className="product-info">
         <span className="product-category">{product.category}</span>
-        <h3>
-          <Link to={'/produktet/' + product.id}>{product.name}</Link>
-        </h3>
-        <p>{product.description}</p>
-        <div className="product-bottom">
+        <div className="product-card-heading">
+          <div className="product-card-identity">
+            <h3>
+              <Link to={'/produktet/' + product.id}>{product.name}</Link>
+            </h3>
+            <p className="product-card-description">{product.description}</p>
+          </div>
           <span className="product-price">
             {money(product.effectivePrice)}
             <small> / {unitLabel[product.unit]}</small>
             {product.effectivePrice < product.price && <del>{money(product.price)}</del>}
           </span>
-          <AddToCartButton product={product} />
         </div>
+        <AddToCartButton product={product} expanded />
       </div>
     </article>
   );
