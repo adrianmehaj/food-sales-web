@@ -293,11 +293,13 @@ export function CheckoutPage() {
           {cart.items.map((item) => (
             <article className="cart-line" key={item.product.id}>
               <img src={item.product.imageUrl || '/brand-mark.svg'} alt="" />
-              <div>
+              <div className="cart-line-details">
                 <h3>{item.product.name}</h3>
                 <p>
                   {money(item.product.effectivePrice)} / {unitLabel[item.product.unit]}
                 </p>
+              </div>
+              <div className="cart-line-quantity">
                 <Quantity
                   value={item.quantity}
                   step={item.product.unit === 'Piece' ? 1 : 0.5}
