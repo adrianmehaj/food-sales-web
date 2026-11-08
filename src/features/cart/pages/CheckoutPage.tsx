@@ -17,6 +17,7 @@ import type { Business, Receipt } from '../../../shared/types';
 import { calendarDate, money, shortId, unitLabel } from '../../../shared/types';
 import { Empty, ErrorBox, Quantity } from '../../../shared/ui';
 import { useAuth } from '../../account/state/AuthContext';
+import { ConfirmButton } from '../../../shared/ConfirmButton';
 
 export interface CustomerFieldsValue {
   name: string;
@@ -280,9 +281,15 @@ export function CheckoutPage() {
       </div>
       <div className="checkout-grid">
         <section className="panel cart-items">
-          <h2>
-            Produktet e zgjedhura <span className="count">{cart.items.length}</span>
-          </h2>
+          <div className="cart-panel-heading">
+            <div>
+              <span className="eyebrow">POROSIA JUAJ</span>
+              <h2>Produktet e zgjedhura</h2>
+            </div>
+            <span className="cart-item-count">
+              {cart.items.length} {cart.items.length === 1 ? 'artikull' : 'artikuj'}
+            </span>
+          </div>
           {cart.items.map((item) => (
             <article className="cart-line" key={item.product.id}>
               <img src={item.product.imageUrl || '/brand-mark.svg'} alt="" />
@@ -302,27 +309,37 @@ export function CheckoutPage() {
               </div>
               <div className="cart-line-end">
                 <strong>{money(item.quantity * item.product.effectivePrice)}</strong>
-                <button
-                  className="icon-button muted"
+                <ConfirmButton
+                  className="icon-button cart-remove"
                   aria-label={'Hiq ' + item.product.name}
-                  onClick={() => cart.remove(item.product.id)}
+                  confirmationTitle="Ta hiqni produktin nga shporta?"
+                  confirmationText={
+                    <>
+                      Produkti <strong>{item.product.name}</strong> do të hiqet nga shporta juaj.
+                    </>
+                  }
+                  onConfirm={() => cart.remove(item.product.id)}
                 >
                   <Trash2 size={17} />
-                </button>
+                </ConfirmButton>
               </div>
             </article>
           ))}
-          <div className="summary-line">
-            <span>Dërgesa</span>
-            <strong className="green-text">Falas</strong>
+          <div className="cart-summary">
+            <div className="summary-line cart-shipping-summary">
+              <span className="cart-shipping-label">
+                <Truck size={17} /> Dërgesa
+              </span>
+              <strong className="green-text">Falas</strong>
+            </div>
+            <div className="summary-line total">
+              <span>Totali</span>
+              <strong>{money(total)}</strong>
+            </div>
+            <p className="muted small">
+              Çmimi aktual dhe pesha përfundimtare konfirmohen nga biznesi.
+            </p>
           </div>
-          <div className="summary-line total">
-            <span>Totali</span>
-            <strong>{money(total)}</strong>
-          </div>
-          <p className="muted small">
-            Çmimi aktual dhe pesha përfundimtare konfirmohen nga biznesi.
-          </p>
         </section>
         <form className="panel checkout-form" onSubmit={submit}>
           <span className="eyebrow">TË DHËNAT E POROSISË</span>

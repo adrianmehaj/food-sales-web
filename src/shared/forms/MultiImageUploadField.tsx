@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ImagePlus, LoaderCircle, X } from 'lucide-react';
 import { api } from '../api';
 import { isSupportedImage } from './imageFile';
+import { ConfirmButton } from '../ConfirmButton';
 
 export function MultiImageUploadField({
   value,
@@ -66,21 +67,23 @@ export function MultiImageUploadField({
         <strong>Fotografitë e reklamës</strong>
         <span>{value.length} / 10</span>
       </div>
-      <p className="muted small">Shfaqen sipas kësaj renditjeje dhe ndërrohen çdo 5 sekonda.</p>
+      <p className="muted small">Shfaqen sipas kësaj renditjeje dhe ndërrohen çdo 2.5 sekonda.</p>
       <div className="gallery-thumbnails">
         {value.map((url, index) => (
           <div className="gallery-thumbnail" key={url + index}>
             <img src={url} alt={'Fotografia ' + (index + 1)} />
             <span>{index + 1}</span>
-            <button
+            <ConfirmButton
               className="gallery-remove"
               type="button"
               disabled={busy}
               aria-label={'Hiq fotografinë ' + (index + 1)}
-              onClick={() => change(value.filter((_, i) => i !== index))}
+              confirmationTitle="Ta hiqni fotografinë nga baneri?"
+              confirmationText={`Fotografia ${index + 1} do të hiqet nga galeria. Fotografitë e tjera mbeten.`}
+              onConfirm={() => change(value.filter((_, i) => i !== index))}
             >
               <X size={15} />
-            </button>
+            </ConfirmButton>
             <div className="gallery-reorder">
               <button
                 type="button"

@@ -7,6 +7,7 @@ import { money, unitLabel } from '../../../shared/types';
 import { ErrorBox, Modal, Quantity, useToast } from '../../../shared/ui';
 import { CustomerFields, emptyCustomer } from '../../cart/pages/CheckoutPage';
 import type { CustomerFieldsValue } from '../../cart/pages/CheckoutPage';
+import { ConfirmButton } from '../../../shared/ConfirmButton';
 
 export function ManualSaleModal({ close, saved }: { close: () => void; saved: () => void }) {
   const [fields, setFields] = useState<CustomerFieldsValue>(emptyCustomer);
@@ -88,14 +89,16 @@ export function ManualSaleModal({ close, saved }: { close: () => void; saved: ()
                   {customer.phone} · {customer.type === 'Business' ? 'Biznes' : 'Individ'}
                 </small>
               </span>
-              <button
+              <ConfirmButton
                 type="button"
                 className="icon-button"
                 aria-label="Hiq klientin"
-                onClick={() => setCustomer(undefined)}
+                confirmationTitle="Ta hiqni klientin nga kjo shitje?"
+                confirmationText="Llogaria e klientit nuk fshihet. Do të hiqet vetëm përzgjedhja për këtë shitje."
+                onConfirm={() => setCustomer(undefined)}
               >
                 <X size={17} />
-              </button>
+              </ConfirmButton>
             </div>
           ) : (
             <>
@@ -176,14 +179,21 @@ export function ManualSaleModal({ close, saved }: { close: () => void; saved: ()
                 }
               />
               <strong>{money(price(line.product) * line.quantity)}</strong>
-              <button
+              <ConfirmButton
                 type="button"
                 className="icon-button"
                 aria-label={'Hiq ' + line.product.name}
-                onClick={() => setLines(lines.filter((x) => x.product.id !== line.product.id))}
+                confirmationTitle="Ta hiqni produktin nga shitja?"
+                confirmationText={
+                  <>
+                    Produkti <strong>{line.product.name}</strong> do të hiqet nga lista e kësaj
+                    shitjeje.
+                  </>
+                }
+                onConfirm={() => setLines(lines.filter((x) => x.product.id !== line.product.id))}
               >
                 <Trash2 size={16} />
-              </button>
+              </ConfirmButton>
             </div>
           ))}
           <div className="summary-line total">

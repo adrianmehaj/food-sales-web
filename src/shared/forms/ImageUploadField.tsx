@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { ImagePlus, LoaderCircle, Trash2 } from 'lucide-react';
 import { api } from '../api';
 import { isSupportedImage } from './imageFile';
+import { ConfirmButton } from '../ConfirmButton';
 
 export function ImageUploadField({
   value,
@@ -83,15 +84,17 @@ export function ImageUploadField({
             {busy ? 'Duke ngarkuar…' : value ? 'Ndrysho fotografinë' : 'Zgjidh fotografinë'}
           </label>
           {value && (
-            <button
+            <ConfirmButton
               type="button"
               className="icon-button"
               disabled={busy}
               aria-label="Hiq fotografinë"
-              onClick={() => change('')}
+              confirmationTitle="Ta hiqni fotografinë?"
+              confirmationText="Fotografia e zgjedhur do të hiqet nga formulari."
+              onConfirm={() => change('')}
             >
               <Trash2 size={18} />
-            </button>
+            </ConfirmButton>
           )}
         </div>
         <small id={id + '-hint'} className="muted">
