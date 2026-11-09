@@ -16,6 +16,7 @@ export function PwaStatus() {
   const ios =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const android = /Android/i.test(navigator.userAgent);
   const standalone =
     window.matchMedia('(display-mode: standalone)').matches ||
     !!(navigator as Navigator & { standalone?: boolean }).standalone;
@@ -38,7 +39,7 @@ export function PwaStatus() {
       observer.disconnect();
       root.style.setProperty('--pwa-prompt-height', '0px');
     };
-  }, [hidden, standalone, install, ios]);
+  }, [hidden, standalone, install, ios, android]);
   useEffect(() => {
     const viewport = window.visualViewport;
     if (!viewport) return;
@@ -130,8 +131,14 @@ export function PwaStatus() {
   }, []);
   async function installApp() {
     if (install) {
-      await install.prompt();
-      if ((await install.userChoice).outcome === 'accepted') setInstall(undefined);
+      const event = install;
+      setInstall(undefined);
+      try {
+        await event.prompt();
+        if ((await event.userChoice).outcome === 'accepted') setHidden(true);
+      } catch {
+        setInstructions(true);
+      }
     } else setInstructions(true);
   }
   return (
@@ -158,7 +165,7 @@ export function PwaStatus() {
           </button>
         </div>
       )}
-      {!hidden && !standalone && (install || ios) && (
+      {!hidden && !standalone && (install || ios || android) && (
         <div ref={banner} className="install-banner">
           <Smartphone size={21} />
           <span>
@@ -179,11 +186,26 @@ export function PwaStatus() {
       )}
       {instructions && (
         <Modal title="Shtoje në ekranin kryesor" close={() => setInstructions(false)}>
-          <p>
-            Në Safari, prekni <strong>Share / Ndaj</strong>, pastaj{' '}
-            <strong>Add to Home Screen / Shto në ekranin kryesor</strong> dhe konfirmoni me{' '}
-            <strong>Add / Shto</strong>.
-          </p>
+          {ios ? (
+            <p>
+              Në Safari, prekni <strong>Share / Ndaj</strong>, pastaj{' '}
+              <strong>Add to Home Screen / Shto në ekranin kryesor</strong> dhe konfirmoni me{' '}
+              <strong>Add / Shto</strong>.
+            </p>
+          ) : (
+            <>
+              <p>
+                Hapeni Tryezën në <strong>Google Chrome</strong>, prekni menynë <strong>⋮</strong>{' '}
+                lart djathtas dhe zgjidhni{' '}
+                <strong>Add to Home screen / Shto në ekranin kryesor</strong>, pastaj{' '}
+                <strong>Install / Instalo</strong>.
+              </p>
+              <p className="muted">
+                Nëse linku u hap brenda WhatsApp, Facebook ose një aplikacioni tjetër, zgjidhni
+                fillimisht <strong>Open in Chrome / Hape në Chrome</strong>.
+              </p>
+            </>
+          )}
           <p className="muted">
             Aplikacioni do të hapet nga ikona e tij. Porositja kërkon internet.
           </p>
