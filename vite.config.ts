@@ -51,5 +51,5 @@ export default defineConfig({
       '/health': backendProxy(),
     },
   },
-  build: { target: ['es2020', 'safari15'] },
+  build: { manifest: true, target: ['es2020', 'safari15'] },
 });

@@ -1,0 +1,120 @@
+/* Intrinsic sizing must allow every grid item to fit a narrow viewport. */
+
+:root {
+  --mobile-nav-height: 0px;
+  --pwa-prompt-height: 0px;
+}
+
+html,
+body,
+#root {
+  min-width: 0;
+  width: 100%;
+}
+
+body {
+  overflow-wrap: break-word;
+}
+
+.wrap {
+  width: 100%;
+}
+
+.checkout-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+
+.form-grid,
+.fulfillment {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.checkout-grid > *,
+.form-grid > *,
+.fulfillment > *,
+.detail-grid > *,
+.profile-page,
+.profile-panel,
+.panel,
+.section-heading > div,
+.header-actions,
+.cart-line > div,
+.summary-line > span,
+.notice > div,
+.account-order > div {
+  min-width: 0;
+}
+
+label {
+  min-width: 0;
+}
+
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+  max-width: 100%;
+}
+
+input[type='date'],
+input[type='datetime-local'] {
+  width: 100%;
+  min-height: 46px;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.cart-line > img {
+  flex-shrink: 0;
+}
+
+.cart-line > div:nth-child(2) {
+  flex: 1;
+}
+
+.cart-line-end {
+  flex-shrink: 0;
+}
+
+.cart-line h3,
+.account-order strong,
+.sidebar-user small {
+  overflow-wrap: anywhere;
+}
+
+.summary-line > strong {
+  flex-shrink: 0;
+}
+
+.profile-email-confirm p {
+  overflow-wrap: break-word;
+}
+
+.mobile-app-nav {
+  display: none;
+}
+
+.install-banner {
+  bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 12px);
+}
+
+.install-banner > span {
+  min-width: 0;
+  flex: 1;
+}
+
+.install-banner > .button,
+.install-banner > .icon-button {
+  flex-shrink: 0;
+}
+
+.install-banner > .icon-button {
+  width: 40px;
+  height: 40px;
+}
+
+.toast.visible {
+  bottom: calc(
+    var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + var(--pwa-prompt-height) + 22px
+  );
+}

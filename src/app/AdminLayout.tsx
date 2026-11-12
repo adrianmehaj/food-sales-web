@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { AdminSearch } from '../features/admin/components/AdminSearch';
 import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
@@ -158,7 +159,9 @@ export function AdminLayout() {
       <div className="admin-main">
         <AdminSearch />
         <main id="main" className="admin-content">
-          <Outlet />
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
         </main>
         <footer className="admin-footer">
           © {new Date().getFullYear()} Tryeza - Produkte Bio · Adrian Mehaj

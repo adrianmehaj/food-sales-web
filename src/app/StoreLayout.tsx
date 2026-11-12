@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { Loading } from '../shared/ui';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { ArrowUpRight, Leaf, Mail, MapPin, Phone, ShoppingBasket, UserRound } from 'lucide-react';
 import { useAuth } from '../features/account/state/AuthContext';
@@ -67,7 +69,9 @@ export function StoreLayout() {
         </div>
       </header>
       <main id="main">
-        <Outlet />
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
       </main>
       <footer className="store-footer">
         <div className="wrap footer-grid">

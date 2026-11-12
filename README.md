@@ -95,10 +95,13 @@ src/
     notifications/     Njoftimet brenda platformës
     reports/           Raportet dhe komponentët financiarë
   shared/              Klienti HTTP, kontratat, formularët dhe eksportet
+  styles/              Stilet e ndara sipas përgjegjësisë dhe rendit të kaskadës
   assets/              Fontet lokale
 public/                Logoja, ikonat, manifesti dhe service worker
 scripts/               Paketimi dhe gjenerimi i ikonave
 ```
+
+Katalogu ngarkohet menjëherë; faqet e tjera dhe paneli i adminit ngarkohen sipas navigimit me `React.lazy`. Formulari i klientit ripërdoret nga checkout-i dhe shitja manuale, pa varësi mes faqeve.
 
 Për rregullat e zgjerimit dhe përgjegjësitë e moduleve shihni [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -110,7 +113,7 @@ Emri i aplikacionit është **Tryeza - Produkte Bio**. Për testim të instalimi
 - **Android:** Chrome → menyja ⋮ → Add to Home screen / Install.
 - **Përditësimet:** versioni i ri aktivizohet me butonin **Përditëso**. Ndryshimi i ikonës së instaluar mund të kërkojë heqjen dhe rishtimin e aplikacionit.
 
-Service worker regjistrohet vetëm në build production. Ai ruan shell-in dhe asetet publike; kërkesat e API-së, porositë dhe pagesat nuk ruhen në cache. Aplikacioni nuk regjistron porosi ose pagesa offline. Shporta ruhet lokalisht në pajisje.
+Service worker regjistrohet vetëm në build production. Ai parapërgatit vetëm shell-in, fontet dhe asetet fillestare nga manifesti i Vite. Faqet e tjera ruhen pasi vizitohen; një faqe e pavizituar mund të mos hapet offline. Kërkesat e API-së, porositë dhe pagesat nuk ruhen në cache. Aplikacioni nuk regjistron porosi ose pagesa offline. Shporta ruhet lokalisht në pajisje.
 
 ## Raportimi financiar
 
@@ -130,6 +133,8 @@ Hostimi i skedarëve statikë nuk siguron automatikisht ASP.NET Core apo SQL Ser
 npm run format:check
 npm run build
 ```
+
+Workflow-i [Frontend CI](.github/workflows/ci.yml) ekzekuton `npm ci`, kontrollin e formatimit dhe build-in për push në `main` dhe pull request. Nuk kërkon kredenciale ose databazë.
 
 Kontrolloni rrjedhat e ndryshuara në desktop dhe në telefon. Build-i nuk zëvendëson verifikimin në pajisje reale. Ky projekt nuk përmban ende një suitë të automatizuar testimi end-to-end.
 

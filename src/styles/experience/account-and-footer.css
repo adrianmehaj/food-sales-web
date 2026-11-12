@@ -1,0 +1,336 @@
+/* Personal space and notifications share the same layout on web and PWA. */
+
+.notification-bell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #e4e9df;
+  background: #fff;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.notification-bell > b {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 19px;
+  height: 19px;
+  padding: 2px 4px;
+  border-radius: 10px;
+  font-size: 10px;
+  color: #fff;
+  background: #a87741;
+  border: 2px solid #fff;
+}
+
+.notification-heading {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11px;
+  color: #87947a;
+  margin-bottom: 16px;
+}
+
+.notification-heading span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.notification-list {
+  display: grid;
+  gap: 9px;
+}
+
+.notification-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  background: #f8faf5;
+  padding: 17px 13px;
+  border-radius: 12px;
+  border: 1px solid #edf1e7;
+}
+
+.notification-item.unread {
+  background: #eef5e8;
+  border-color: #dbe7d0;
+}
+
+.notification-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+  background: #c9d3bf;
+  flex-shrink: 0;
+}
+
+.notification-item.unread .notification-dot {
+  background: #5a8348;
+}
+
+.notification-item > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-item > div strong {
+  font-size: 14px;
+}
+
+.notification-item p {
+  font-size: 13px;
+  color: #5d7055;
+  margin: 8px 0 12px;
+  line-height: 1.75;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.notification-item time {
+  color: #94a085;
+  font-size: 10px;
+}
+
+.account-redesign {
+  padding-top: 30px;
+  padding-bottom: 70px;
+}
+
+.account-welcome {
+  background: #edf1e5;
+  border: 1px solid #e3e8da;
+  border-radius: 22px;
+  padding: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.account-welcome h1 {
+  font-size: 35px;
+  margin-bottom: 12px;
+}
+
+.account-welcome p {
+  font-size: 13px;
+  color: #7c8c6d;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+.account-tabs {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--line);
+  margin: 30px 0;
+}
+
+.account-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 3px;
+  margin-bottom: -1px;
+  color: #8b9680;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+}
+
+.account-tabs button.active {
+  border-bottom-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+}
+
+.account-orders-heading {
+  margin-bottom: 25px;
+}
+
+.account-orders-heading h2 {
+  font-size: 25px;
+}
+
+.account-orders-heading p {
+  font-size: 13px;
+}
+
+.customer-order-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.customer-order-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: left;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
+  min-width: 0;
+}
+
+.customer-order-card:hover {
+  border-color: #b5c7a1;
+  box-shadow: 0 8px 26px #233c2910;
+}
+
+.customer-order-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.customer-order-top > strong {
+  font-size: 17px;
+}
+
+.customer-order-card > time {
+  font-size: 11px;
+  color: #8a9780;
+}
+
+.customer-order-card > p {
+  font-size: 14px;
+  line-height: 1.8;
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.order-delivery-label {
+  font-size: 11px;
+  color: #879575;
+}
+
+.customer-order-money {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #edf0e7;
+}
+
+.customer-order-money small {
+  display: block;
+  color: #8d9883;
+  font-size: 10px;
+  margin-bottom: 7px;
+}
+
+.customer-order-money strong {
+  font-size: 17px;
+}
+
+.customer-order-open {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 25px;
+  padding-top: 17px;
+  border-top: 1px solid #edf0e7;
+  font-size: 12px;
+  color: var(--green);
+}
+
+.account-guest-note {
+  font-size: 11px;
+  color: #97a18e;
+  margin-top: 30px;
+}
+
+.account-redesign .profile-page {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.store-footer {
+  background: #eff2e8;
+  border-top: 1px solid #e2e7d9;
+  margin-top: 35px;
+  padding-top: 50px;
+}
+
+.footer-grid {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 70px;
+  padding-bottom: 40px;
+}
+
+.footer-grid .brand {
+  margin-bottom: 20px;
+}
+
+.footer-grid .brand > span {
+  font-size: 29px;
+}
+
+.footer-grid .brand small {
+  font-size: 8px;
+  letter-spacing: 1.8px;
+}
+
+.footer-brand > p {
+  font-size: 13px;
+  line-height: 1.9;
+  max-width: 330px;
+  margin-bottom: 16px;
+  color: #88957d;
+}
+
+.footer-leaf {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #72865f;
+  font-size: 12px;
+}
+
+.footer-grid .eyebrow {
+  font-size: 9px;
+  margin-bottom: 22px;
+  letter-spacing: 1.5px;
+}
+
+.footer-grid a:not(.brand) {
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.footer-contact-note {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #8c997f;
+  margin-top: 18px;
+  max-width: 240px;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: 21px;
+  padding-bottom: 24px;
+  border-top: 1px solid #dfe5d7;
+  font-size: 11px;
+  color: #8b9780;
+  line-height: 1.7;
+}

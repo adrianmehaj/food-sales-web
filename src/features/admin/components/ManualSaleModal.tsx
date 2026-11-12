@@ -5,8 +5,8 @@ import { send, useResource } from '../../../shared/api';
 import type { Customer, Page, Product, Receipt } from '../../../shared/types';
 import { money, unitLabel } from '../../../shared/types';
 import { ErrorBox, Modal, Quantity, useToast } from '../../../shared/ui';
-import { CustomerFields, emptyCustomer } from '../../cart/pages/CheckoutPage';
-import type { CustomerFieldsValue } from '../../cart/pages/CheckoutPage';
+import { CustomerFields, emptyCustomer } from '../../cart/components/CustomerFields';
+import type { CustomerFieldsValue } from '../../cart/components/CustomerFields';
 import { ConfirmButton } from '../../../shared/ConfirmButton';
 
 export function ManualSaleModal({ close, saved }: { close: () => void; saved: () => void }) {
